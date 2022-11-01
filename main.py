@@ -1,7 +1,6 @@
 import pyrogram
 from pyrogram import Client
 from pyrogram import filters
-from pyrogram.types import InlineKeyboardMarkup,InlineKeyboardButton
 import bypasser
 import os
 import ddl
@@ -9,13 +8,13 @@ import requests
 import threading
 
 # bot
-bot_token = os.environ.get("TOKEN", "")
-api_hash = os.environ.get("HASH", "") 
-api_id = os.environ.get("ID", "")
+bot_token = os.environ.get("BOT_TOKEN", "")
+api_hash = os.environ.get("API_HASH", "") 
+api_id = os.environ.get("API_ID", "")
 app = Client("my_bot",api_id=api_id, api_hash=api_hash,bot_token=bot_token)  
 
 # ENVs
-GDTot_Crypt = os.environ.get("CRYPT","b0lDek5LSCt6ZjVRR2EwZnY4T1EvVndqeDRtbCtTWmMwcGNuKy8wYWpDaz0%3D")
+GDTot_Crypt = os.environ.get("GD_CRYPT","")
 Laravel_Session = os.environ.get("Laravel_Session","")
 XSRF_TOKEN = os.environ.get("XSRF_TOKEN","")
 KCRYPT = os.environ.get("KOLOP_CRYPT","")
@@ -154,7 +153,12 @@ def mainthread(cmd,url,message,msg):
         print("entered adfly:",url)
         out = bypasser.adfly(url)
         link = out['bypassed_url']
- 
+        
+     # htp
+    elif cmd == "/ht":
+        print("entered htplink:",url)
+        link = bypasser.htp(url) 
+        
     # gplinks
     elif cmd == "/gp":
         print("entered gplink:",url)
@@ -227,7 +231,7 @@ def loopthread(cmd,message):
 
 
 # commands
-AvailableCommands = ['ol','sc','dl','kd','hd','df','ko','fc','su','sg','gy','pi','st','ps','sh','gt','af','gp','dp','lv','rl','ou','gd','ot','ig']
+AvailableCommands = ['ol','sc','dl','kd','hd','df','ko','fc','su','sg','gy','pi','st','ps','sh','gt','af','ht','gp','dp','lv','rl','ou','gd','ot','ig']
 @app.on_message(filters.command(AvailableCommands))
 def receive(client: pyrogram.client.Client, message: pyrogram.types.messages_and_media.message.Message):
     bypass = threading.Thread(target=lambda:loopthread(message.text.split(" ")[0],message),daemon=True)
@@ -257,9 +261,7 @@ def docfile(client: pyrogram.client.Client, message: pyrogram.types.messages_and
 # start command
 @app.on_message(filters.command(["start"]))
 def send_start(client: pyrogram.client.Client, message: pyrogram.types.messages_and_media.message.Message):
-    app.send_message(message.chat.id, f"__👋 Hi **{message.from_user.mention}**, i am Link Bypasser Bot, just send me any supported links with proper format and i will you give you results. use /help to veiw supported sites list.__",
-    reply_markup=InlineKeyboardMarkup([[ InlineKeyboardButton("🌐 Source Code", url="https://github.com/bipinkrish/Link-Bypasser-Bot")]]), reply_to_message_id=message.id)
-
+    app.send_message(message.chat.id, f"__👋 Hi **{message.from_user.mention}**, i am Link Bypasser Bot, just send me any supported links with proper format and i will you give you results. use /help to veiw supported sites list.__")
 
 # help command
 @app.on_message(filters.command(["help"]))
@@ -267,6 +269,7 @@ def send_help(client: pyrogram.client.Client, message: pyrogram.types.messages_a
     app.send_message(message.chat.id, "🔗 **Available Sites** \n\n  \
  /dl - __direct download link (/ddllist)__ \n  \
  /af - __adfly__ \n  \
+ /ht - __htplinks__\n \
  /gp - __gplinks__ \n  \
  /dp - __droplink__ \n  \
  /lv - __linkvertise__ \n  \
@@ -363,14 +366,6 @@ def ddllis(client: pyrogram.client.Client, message: pyrogram.types.messages_and_
 - sbembed.com, watchsb.com, streamsb.net, sbplay.org
     __"""
     app.send_message(message.chat.id, list, reply_to_message_id=message.id)     
-
-
-# see help
-@app.on_message(filters.text)
-def short(client: pyrogram.client.Client, message: pyrogram.types.messages_and_media.message.Message):
-    if message.text[0] == "/":
-        app.send_message(message.chat.id, "__⏩ see /help__", reply_to_message_id=message.id)
-
 
 # server loop
 print("bot started")
